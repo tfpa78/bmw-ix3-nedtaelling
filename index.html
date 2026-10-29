@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMW iX3 Supercharged M Sport Pro - Nedtælling</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            /* Baggrundsbillede af BMW iX3 integreret direkte */
+            background-image: url('https://bilhandel.dk');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Mørkt filter over billedet så uret og tekst står helt skarpt */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(11, 12, 16, 0.85) 0%, rgba(0, 25, 93, 0.6) 100%);
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            background: rgba(20, 23, 34, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 40px 60px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 102, 224, 0.3);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            max-width: 750px;
+            width: 90%;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #0066e0, #00aaff);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        h1 span {
+            color: #00aaff;
+        }
+
+        p.subtitle {
+            color: #cdd2e1;
+            font-size: 1rem;
+            margin-bottom: 35px;
+            letter-spacing: 0.5px;
+        }
+
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .time-box {
+            background: rgba(11, 12, 16, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px 10px;
+            box-shadow: inset 0 0 15px rgba(0, 102, 224, 0.15);
+        }
+
+        .time-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #00aaff;
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
+        }
+
+        .time-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #a0a7ba;
+            margin-top: 5px;
+        }
+
+        .m-stripes {
+            height: 4px;
+            width: 100%;
+            display: flex;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 25px;
+        }
+
+        .m-blue-light { flex: 1; background: #0066e0; }
+        .m-blue-dark { flex: 1; background: #00195d; }
+        .m-red { flex: 1; background: #e60012; }
+
+        @media (max-width: 600px) {
+            .countdown-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            h1 {
+                font-size: 1.4rem;
+            }
+            .container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="badge">Neue Klasse Edition</div>
+        <h1>BMW iX3 <span>Supercharged M Sport Pro</span></h1>
+        <p class="subtitle">Nedtælling til afhentning af BMW IX3 den 25. november 2026 kl. 13:00</p>
+
+        <div class="countdown-grid">
+            <div class="time-box">
+                <div class="time-value" id="days">00</div>
+                <div class="time-label">Dage</div>
+            </div>
+            <div class="time-box">
+                <div class="time-value" id="hours">00</div>
+                <div class="time-label">Timer</div>
+            </div>
+            <div class="time-box">
+                <div class="time-value" id="minutes">00</div>
+                <div class="time-label">Minutter</div>
+            </div>
+            <div class="time-box">
+                <div class="time-value" id="seconds">00</div>
+                <div class="time-label">Sekunder</div>
+            </div>
+        </div>
+
+        <div class="m-stripes">
+            <div class="m-blue-light"></div>
+            <div class="m-blue-dark"></div>
+            <div class="m-red"></div>
+        </div>
+    </div>
+
+    <script>
+        // Ultimativ sikker dato-konstruktion til iOS (Måned er 0-baseret, så 10 = november)
+        const targetDate = new Date(2026, 10, 25, 13, 0, 0).getTime();
+
+        function updateTimer() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                document.getElementById("countdown").innerHTML = '<div class="launched-message">Bilen er lanceret nu!</div>';
+                clearInterval(timerInterval);
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = String(days).padStart(2, '0');
+            document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+            document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+            document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+        }
+
+        const timerInterval = setInterval(updateTimer, 1000);
+        updateTimer();
+    </script>
+</body>
+</html>
